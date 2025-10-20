@@ -1,44 +1,87 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI & Agents — Janaka</title>
-  <meta name="description" content="Agentic AI patterns: tool orchestration, guardrails, distribution, RAG, and monitoring."/>
-  <link rel="canonical" href="https://ai.janaka.me/"/>
-  <style>
-    body{margin:0;background:#0b1016;color:#e8eef7;font:16px/1.6 system-ui}
-    a{color:#00b3ff}.wrap{max-width:1100px;margin:0 auto;padding:24px}
-    .nav{display:flex;justify-content:space-between;border-bottom:1px solid #2a3a50;padding:12px 0}
-    .card{background:#121823;border:1px solid #2a3a50;border-radius:14px;padding:16px;margin:16px 0}
-    pre{background:#0f1520;border:1px solid #2a3a50;border-radius:12px;padding:12px;overflow:auto}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI & Agents – Janaka</title>
+<meta name="description" content="Agentic AI patterns: tool orchestration, guardrails, distribution, RAG, and monitoring.">
+<link rel="canonical" href="https://ai.janaka.me/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body { font-family: 'Inter', sans-serif; }
+pre { padding:1.25rem; background-color: #f3f4f6; border-radius: 0.375rem; overflow-x:auto; margin-top:1rem; margin-bottom:1rem; }
+code { font-family: 'Menlo','Monaco','Consolas','Liberation Mono','Courier New', monospace; }
+</style>
 </head>
-<body>
-<div class="wrap">
-  <nav class="nav"><a href="https://janaka.me">← Home</a> <div><a href="https://blog.janaka.me">Blog</a> · <a href="https://labs.janaka.me">Labs</a> · <a href="https://cv.janaka.me">CV</a></div></nav>
-  <h1>Agentic AI Toolkit</h1>
-  <p>Production patterns I use in real systems: MCP, tool schemas, retries, DLQ, and safety.</p>
-
-  <section class="card">
-    <h2>MCP-Enabled Agent Skeleton</h2>
-    <pre><code>// Pseudo-code layout of an MCP-capable agent
-initAgent({
-  tools: [searchTool, fileReadTool, emailDraftTool],
-  policies: { maxTokens: 2000, allowWrite: ["drafts/"], deny: ["prod/"] },
-  routing: { ranker: "mmr", temperature: 0.2 },
-  logging: { capture: ["prompts","tools","latency"] }
-});</code></pre>
-    <p><a href="https://blog.janaka.me/posts/mcp-agent-integration.html">Read the full guide →</a></p>
-  </section>
-
-  <section class="card">
-    <h2>Case Studies</h2>
-    <ul>
-      <li>Job-Research Agent — multi-tool orchestration</li>
-      <li>RAG Chatbot — retrieval patterns that actually work</li>
-      <li>Guardrails & Observability — stop “silent failures”</li>
-    </ul>
-  </section>
+<body class="bg-gray-50 text-gray-800">
+<header class="bg-white shadow">
+<div class="max-w-5xl mx-auto flex justify-between items-center py-4 px-6">
+<a href="https://janaka.me" class="text-lg font-semibold text-gray-800 hover:text-indigo-600">Home</a>
+<nav class="flex space-x-4">
+<a href="https://blog.janaka.me" class="px-3 py-2 rounded-md text-gray-600 hover:text-indigo-600">Blog</a>
+<a href="https://lab.janaka.me" class="px-3 py-2 rounded-md text-gray-600 hover:text-indigo-600">Lab</a>
+<a href="https://ai.janaka.me" class="px-3 py-2 rounded-md text-indigo-600 font-semibold">AI / Agents</a>
+<a href="https://cv.janaka.me" class="px-3 py-2 rounded-md text-gray-600 hover:text-indigo-600">CV</a>
+</nav>
 </div>
+</header>
+
+<main class="max-w-4xl mx-auto py-12 px-6">
+<h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Agentic AI & Agents</h1>
+<p class="text-lg text-gray-700 mb-6">Production patterns for building safe and scalable AI agents: multi‑capability prompts, RAG, guardrails, distribution and monitoring.</p>
+
+<div class="grid gap-8">
+<section class="p-6 bg-white rounded-lg shadow">
+<h2 class="text-2xl font-semibold text-gray-900 mb-2">MCP‑Enabled Agent Skeleton</h2>
+<p class="mb-4">A minimal pattern to structure your agents around explicit capabilities. Define your functions, embed them into a prompt, and implement handlers that enforce schema and safety.</p>
+<pre><code>// Capabilities definition
+const capabilities = [
+  {
+    name: 'searchDocs',
+    description: 'Search company knowledge base',
+    parameters: { query: 'string' }
+  },
+  {
+    name: 'createTicket',
+    description: 'File a support ticket',
+    parameters: { title: 'string', body: 'string' }
+  }
+];
+
+// Prompt template
+const mcpPrompt = `
+You are an assistant with two capabilities: searchDocs and createTicket.
+Use searchDocs to find information; use createTicket only when instructed.
+Return the JSON for the appropriate capability when needed.
+`;
+
+// Handler functions...
+</code></pre>
+</section>
+
+<section class="p-6 bg-white rounded-lg shadow">
+<h2 class="text-2xl font-semibold text-gray-900 mb-2">Production Patterns</h2>
+<ul class="list-disc ml-6 space-y-2">
+<li><span class="font-medium">RAG & Summarization:</span> Use retrieval‑augmented generation to ground responses in trusted data. Summarize results before passing back to the user.</li>
+<li><span class="font-medium">Dead Letter Queue & Safety:</span> Capture failures and unexpected outputs in a dead letter queue. Use monitoring and alerts to handle them gracefully.</li>
+<li><span class="font-medium">Streaming & Progress Updates:</span> Stream partial outputs for long‑running tasks and provide progress bars via websockets or SSE.</li>
+<li><span class="font-medium">Distribution & Tuners:</span> Distribute agent workloads across microservices; tune prompts and models per capability for optimal performance.</li>
+<li><span class="font-medium">Observability & Monitoring:</span> Instrument your agents with structured logs, metrics and traces. Visualize in dashboards and set up anomaly detection.</li>
+</ul>
+</section>
+
+<section class="p-6 bg-white rounded-lg shadow">
+<h2 class="text-2xl font-semibold text-gray-900 mb-2">Case Study: Job Research Agent</h2>
+<p class="mb-4">This internal tool uses MCPs to orchestrate job search, email summarization and application submission. It runs on a serverless stack with event streaming and RAG for company data. <a href="https://lab.janaka.me" class="text-indigo-600 hover:underline">See Labs</a> for details.</p>
+</section>
+</div>
+
+<footer class="border-t mt-12 pt-6 text-sm text-gray-500">
+<p>© 2025 Janaka Premaratne. Built with passion &nbsp;|&nbsp; <a href="mailto:janaka@example.com" class="text-indigo-600 hover:underline">Contact</a></p>
+</footer>
+</main>
 </body>
 </html>
